@@ -1,5 +1,72 @@
 // Budget Controller module 
 var budgetController=(function(){
+
+    // Constructor of Expense
+    var Expense=function(id, description, value){
+        this.id=id;
+        this.description=description;
+        this.value=value;
+    };
+
+    // Constructor of Income
+    var Income=function(id, description, value){
+        this.id=id;
+        this.description=description;
+        this.value=value;
+    };
+
+    // Store all income and expenses into array
+    // var allExpenses=[];
+    // var allIncomes=[];
+    // var totalExpenses=0;
+
+    // it is good to create object for store data (This is my data structure)
+    var data= {
+        allItems:{
+            exp: [],
+            inc: []
+        },
+        totals: {
+            exp: 0,
+            inc: 0
+        }
+    }
+
+    //  For Public access  
+    return {
+        addItem: function(type, des, val){
+            var newItem, ID;
+            
+            // [1 2 3 4 5], next ID=6
+            // [1 2 3 6 8], next ID=9
+            // ID = LastID + 1
+            // Create new ID
+            if(data.allItems[type].length > 0){
+                ID=data.allItems[type][data.allItems[type].length-1].id + 1;
+            }else{
+                ID=0;
+            }
+            
+            // Create new Item based on 'inc' and 'exp' type
+            if(type === 'exp'){
+                newItem = new Expense(ID, des, val);
+            }else if(type === 'inc'){
+                newItem = new Income(ID, des, val);
+            }
+
+            // Push new Item into data structure
+            data.allItems[type].push(newItem);
+
+            // return the new Item
+            return newItem;
+        },
+        testing: function(){
+            console.log(data);
+            
+        }
+
+    };
+
     /* all functions and variable are private because of IIFE except return object
     var x=23;
     var add=function(a){
@@ -59,15 +126,44 @@ var UIController=(function(){
 // Global App Controller Module It will connect to both module to control them
 var controller=(function(budgetCtrl, UICtrl){
 
+    // Function for setup event Listeners
+    var setupEventListeners = function(){
+
+        // Get DOM Strings t make our code easy
+        var DOM = UIController.getDOMStrings();
+        
+        document.querySelector(DOM.inputBtn).addEventListener('click',ctrlAddItem);
+
+        // Handle keyboard event
+        document.addEventListener('keypress',function(event){
+            if(event.keyCode === 13 || event.which === 13){
+                // console.log('Enter was pressed');
+                ctrlAddItem();
+                //1. get the field input data
+
+                //2. Add item to the budget controller
+            
+                //3. Add item to the UI
+
+                //4. Calculate the budget
+            
+                // 5. Display the budget on the UI
+            }
+        
+        });
+    }
+
     // Get DOM Strings t make our code easy
-    var DOM = UIController.getDOMStrings();
+    // var DOM = UIController.getDOMStrings();
 
     var ctrlAddItem=function(){
+        var input, newItem;
+
         //1. get the field input data
-        var input=UICtrl.getInput();
-        console.log(input);
+        input=UICtrl.getInput();
         
         //2. Add item to the budget controller
+        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
         
         //3. Add item to the UI
 
@@ -90,14 +186,14 @@ var controller=(function(budgetCtrl, UICtrl){
         // 5. Display the budget on the UI
         
     // });
-    document.querySelector(DOM.inputBtn).addEventListener('click',ctrlAddItem);
+    // document.querySelector(DOM.inputBtn).addEventListener('click',ctrlAddItem);
 
-    
+
     // Handle keyboard event
-    document.addEventListener('keypress',function(event){
-        if(event.keyCode === 13 || event.which === 13){
+    // document.addEventListener('keypress',function(event){
+    //     if(event.keyCode === 13 || event.which === 13){
             // console.log('Enter was pressed');
-            ctrlAddItem();
+    //         ctrlAddItem();
             //1. get the field input data
 
             //2. Add item to the budget controller
@@ -107,9 +203,9 @@ var controller=(function(budgetCtrl, UICtrl){
             //4. Calculate the budget
         
             // 5. Display the budget on the UI
-        }
+    //     }
         
-    });
+    // });
 
     /*var z=budgetCtrl.publicTest(10);
 
@@ -120,4 +216,13 @@ var controller=(function(budgetCtrl, UICtrl){
         }
     }*/
 
+    return {
+        init: function(){
+            console.log('Application started');
+            setupEventListeners();
+        }
+    };
+
 }) (budgetController, UIController);
+
+controller.init();
