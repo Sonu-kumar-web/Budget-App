@@ -60,11 +60,7 @@ var budgetController=(function(){
             // return the new Item
             return newItem;
         },
-        testing: function(){
-            console.log(data);
-            
-        }
-
+        
     };
 
     /* all functions and variable are private because of IIFE except return object
@@ -92,7 +88,9 @@ var UIController=(function(){
         inputType: '.add__type',
         inputDescription: '.add__description',
         inputValue: '.add__value',
-        inputBtn: '.add__btn'
+        inputBtn: '.add__btn',
+        incomeContainer: '.income__list',
+        expensesContainer: '.expenses__list'
     }
 
     // Exposed Object
@@ -110,6 +108,41 @@ var UIController=(function(){
         //     var type=document.querySelector('.add__type').value; // value will be either inc or exp not + or -
         //     var description=document.querySelector('.add__description').value;
         //     var value=document.querySelector('.add__value').value;
+        },
+
+        addListItem: function(obj, type){
+            var html, newHTML, element;
+            // Create HTML string with placeholder text (html code from index file)
+            if(type === 'inc'){
+                element=DOMStrings.incomeContainer;
+                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+            }else if(type === 'exp'){
+                element=DOMStrings.expensesContainer;
+                // (html code from index file)
+                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+            }
+            
+            // Replace the placeholder with actual data
+            newHTML=html.replace('%id%', obj.id);
+            newHTML=newHTML.replace('%description%', obj.description);
+            newHTML=newHTML.replace('%value%', obj.value)
+            
+            // Insert the HTML into the DOM
+            document.querySelector(element).insertAdjacentHTML('beforeend',newHTML);
+
+        },
+
+        // Clear the input values from UI
+        clearFields: function() {
+            var fields, fieldsArr;
+            // querySelectorAll returns list
+            fields=document.querySelectorAll(DOMStrings.inputDescription + ', ' + DOMStrings.inputValue);
+            fieldsArr=Array.prototype.slice.call(fields);
+            fieldsArr.forEach(function(current, index, array){
+                current.value="";
+            });
+            //  Set the focus on the first element of the array(At input description )
+            fieldsArr[0].focus();
         },
 
         // Exposing our DOM string object to public
@@ -166,7 +199,10 @@ var controller=(function(budgetCtrl, UICtrl){
         newItem = budgetCtrl.addItem(input.type, input.description, input.value);
         
         //3. Add item to the UI
+        UICtrl.addListItem(newItem, input.type);
 
+        // Clear the field
+        UICtrl.clearFields();
         //4. Calculate the budget
         
         // 5. Display the budget on the UI
