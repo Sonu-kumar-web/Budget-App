@@ -103,7 +103,10 @@ var UIController=(function(){
                 // value: document.querySelector('.add__value').value
                 type: document.querySelector(DOMStrings.inputType).value, 
                 description: document.querySelector(DOMStrings.inputDescription).value,
-                value: document.querySelector(DOMStrings.inputValue).value
+                // value: document.querySelector(DOMStrings.inputValue).value
+                //Convert String into float
+                value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
+                
             };
         //     var type=document.querySelector('.add__type').value; // value will be either inc or exp not + or -
         //     var description=document.querySelector('.add__description').value;
@@ -189,24 +192,40 @@ var controller=(function(budgetCtrl, UICtrl){
     // Get DOM Strings t make our code easy
     // var DOM = UIController.getDOMStrings();
 
+    // Calculate the budget and display the budget on the UI
+    var updateBudget=function(){
+        //4. Calculate the budget
+
+        // Return the budget
+
+        // 5. Display the budget on the UI
+
+    };
+
     var ctrlAddItem=function(){
         var input, newItem;
 
         //1. get the field input data
         input=UICtrl.getInput();
         
-        //2. Add item to the budget controller
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
-        
-        //3. Add item to the UI
-        UICtrl.addListItem(newItem, input.type);
+        // To prevent false Input
+        if(input.description !== "" && !isNaN(input.value) && input.value>0){
 
-        // Clear the field
-        UICtrl.clearFields();
-        //4. Calculate the budget
-        
-        // 5. Display the budget on the UI
-        
+            //2. Add item to the budget controller
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+            
+            //3. Add item to the UI
+            UICtrl.addListItem(newItem, input.type);
+
+            // Clear the field
+            UICtrl.clearFields();
+
+            // 4 and 5 are written in a separate function to follow DRy principal
+            //4. Calculate the budget
+            // 5. Display the budget on the UI
+            // Calculate and update budget
+            updateBudget();
+        }    
     }
 
     // document.querySelector('.add__btn').addEventListener('click', function(){
