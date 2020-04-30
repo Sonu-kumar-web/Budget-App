@@ -198,6 +198,15 @@ var UIController=(function(){
 
         },
 
+        // Remove item from UI
+        deleteListItem: function(selectorID){
+            // first select element move up to select parent and again select element and remove as child
+            // document.getElementById(selectorID).parentNode.removeChild(document.getElementById(selectorID));
+            var el=document.getElementById(selectorID);
+            el.parentNode.removeChild(el);
+
+        },
+
         // Clear the input values from UI
         clearFields: function() {
             var fields, fieldsArr;
@@ -314,20 +323,21 @@ var controller=(function(budgetCtrl, UICtrl){
     // Function for delete item
     var ctrlDeleteItem=function(event){
         var itemID, splitID, type, ID;
-        // Trevarse up in DOM to reach main container element and get their id
+        // Traverse up in DOM to reach main container element and get their id
         // console.log(event.target.parentNode.parentNode.parentNode.parentNode.id);
         itemID=event.target.parentNode.parentNode.parentNode.parentNode.id;
 
         if (itemID){
             splitID=itemID.split('-');
             type=splitID[0];
-            ID=parseInt(splitID[0]);
+            ID=parseInt(splitID[1]);
         }
         // 1. Delete the item from the data Structure
             budgetCtrl.deleteItem(type, ID);
         // 2. Delete the item from UI
-
+            UICtrl.deleteListItem(itemID);
         // 3. Update and show the new budget;
+            updateBudget();
         
     };
 
