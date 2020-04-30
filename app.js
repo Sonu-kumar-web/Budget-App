@@ -72,6 +72,8 @@ var budgetController=(function(){
             return newItem;
         },
 
+       
+
         // To calculate the budget
         calculateBudget: function(){
 
@@ -131,7 +133,8 @@ var UIController=(function(){
         budgetLabel: '.budget__value',
         incomeLabel: '.budget__income--value',
         expensesLabel:'.budget__expenses--value',
-        percentageLabel: '.budget__expenses--percentage'
+        percentageLabel: '.budget__expenses--percentage',
+        container: '.container'
     }
 
     // Exposed Object
@@ -159,11 +162,12 @@ var UIController=(function(){
             // Create HTML string with placeholder text (html code from index file)
             if(type === 'inc'){
                 element=DOMStrings.incomeContainer;
-                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                // Hard coded HTML
+                html = '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }else if(type === 'exp'){
                 element=DOMStrings.expensesContainer;
-                // (html code from index file)
-                html = '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+                // (html code from index file) ,Hard coded HTML
+                html = '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">%value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
             }
             
             // Replace the placeholder with actual data
@@ -239,9 +243,12 @@ var controller=(function(budgetCtrl, UICtrl){
             
                 // 5. Display the budget on the UI
             }
-        
         });
-    }
+
+        // Add event delegation on common container
+        document.querySelector(DOM.container).addEventListener('click',ctrlDeleteItem);
+
+    };
 
     // Get DOM Strings t make our code easy
     // var DOM = UIController.getDOMStrings();
@@ -285,6 +292,26 @@ var controller=(function(budgetCtrl, UICtrl){
             updateBudget();
         }    
     }
+
+    // Function for delete item
+    var ctrlDeleteItem=function(event){
+        var itemID, splitID, type, ID;
+        // Trevarse up in DOM to reach main container element and get their id
+        // console.log(event.target.parentNode.parentNode.parentNode.parentNode.id);
+        itemID=event.target.parentNode.parentNode.parentNode.parentNode.id;
+
+        if (itemID){
+            splitID=itemID.split('-');
+            type=splitID[0];
+            ID=splitID[0];
+        }
+        // 1. Delete the item from the data Structure
+
+        // 2. Delete the item from UI
+
+        // 3. Update and show the new budget;
+        
+    };
 
     // document.querySelector('.add__btn').addEventListener('click', function(){
 
