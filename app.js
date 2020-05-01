@@ -230,6 +230,12 @@ var UIController=(function(){
 
     };
 
+    var nodeListForEach=function(list, callback){
+        for(var i=0; i<list.length;i++){
+            callback(list[i], i);
+        }
+    }
+
     // Exposed Object
     return {
         getInput: function(){
@@ -317,12 +323,6 @@ var UIController=(function(){
             
             var fields = document.querySelectorAll(DOMStrings.expensesPercLabel); // It will return a node List and node list does not have forEach method
 
-            var nodeListForEach=function(list, callback){
-                for(var i=0; i<list.length;i++){
-                    callback(list[i], i);
-                }
-            }
-
             nodeListForEach(fields, function(current, index){
 
                 if(percentages[index]>0){
@@ -346,6 +346,23 @@ var UIController=(function(){
             
             year = now.getFullYear();
             document.querySelector(DOMStrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
+
+        changedType: function(){
+
+            // Select Class names separate by comma
+            var fields = document.querySelectorAll(
+                DOMStrings.inputType + ',' +
+                DOMStrings.inputDescription + ',' +
+                DOMStrings.inputValue
+            );
+
+            nodeListForEach(fields, function(cur){
+                cur.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMStrings.inputBtn).classList.toggle('red');
+
         },
 
         // Exposing our DOM string object to public
@@ -385,10 +402,13 @@ var controller=(function(budgetCtrl, UICtrl){
             
                 // 5. Display the budget on the UI
             }
+
         });
 
         // Add event delegation on common container
         document.querySelector(DOM.container).addEventListener('click',ctrlDeleteItem);
+
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
 
     };
 
